@@ -1,4 +1,41 @@
----
+-import React, { useState } from 'react';
+import { View, Text, TextInput, FlatList } from 'react-native';
+
+const App = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [results, setResults] = useState([]);
+
+  const handleSearch = async () => {
+    // Implement API call to legal database here
+    // For example, using Fastcase API
+    const response = await fetch(`https://api.fastcase.com/search?q=${searchTerm}`);
+    const data = await response.json();
+    setResults(data.results);
+  };
+
+  return (
+    <View>
+      <TextInput
+        placeholder="Search Case Law"
+        value={searchTerm}
+        onChangeText={setSearchTerm}
+        onSubmitEditing={handleSearch}
+      />
+      <FlatList
+        data={results}
+        renderItem={({ item }) => (
+          <Text>
+            {item.caseName} - {item.summary}
+          </Text>
+        )}
+        keyExtractor={item => item.caseId}
+      />
+    </View>
+  );
+};
+
+export default App;
+--
 title: Set up your environment
 description: Learn how to set up your development environment to start building with Expo.
 hideTOC: true
